@@ -16,7 +16,7 @@ public class HangmanGameDriver {
 
     public void start() {
         int numWins = 0;
-        for(int i=0; i < runs; i++) {
+        for(int i = 0; i < runs; i++) {
             DictionaryClient dictionaryClient = new SilWebDictionaryClient();
             DictionaryClient mfuDictionaryClient = new MostFrequentlyUsedWordsDictionaryClient();
             HangmanGameStrategy gameStrategy = new MyGameStrategy(dictionaryClient, mfuDictionaryClient);
@@ -31,7 +31,11 @@ public class HangmanGameDriver {
     }
 
     public static void main(String[] args) {
-        HangmanGameDriver gameDriver = new HangmanGameDriver(100);
+        if(args.length != 1) {
+            throw new RuntimeException("Usage: HangmanGameDriver <numRuns>");
+        }
+        int numRuns = new Integer(args[0]);
+        HangmanGameDriver gameDriver = new HangmanGameDriver(numRuns);
         gameDriver.start();
     }
 }

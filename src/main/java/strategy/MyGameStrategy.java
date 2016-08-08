@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  * Game strategy based on probability of hit
  */
 public class MyGameStrategy implements HangmanGameStrategy {
-    private Map<Integer, Set<String>> dictionaryMap;
-    private Map<Integer, Set<String>> mostFrequentlyUsedDictoryMap;
+    protected Map<Integer, Set<String>> dictionaryMap;
+    protected Map<Integer, Set<String>> mostFrequentlyUsedDictoryMap;
 
     public MyGameStrategy(DictionaryClient allWordDictionaryClient, DictionaryClient mostFrequentlyUsedDictionaryClient) {
         this.dictionaryMap = buildDictionaryMap(allWordDictionaryClient.getAllWords());
@@ -28,22 +28,22 @@ public class MyGameStrategy implements HangmanGameStrategy {
 
     /**
      * Computes next character guess
-     * @param phrase
-     * @param previousGuesses
-     * @param numTriesLeft
-     * @return
+     * @param phrase current state of the phrase that needs to be guessed
+     * @param previousGuesses characters guessed so far
+     * @param numTriesLeft number of tries left in the game
+     * @return Optional<Character> next guess
      */
     @Override
     public Optional<Character> computeNextGuess(String phrase, List<Character> previousGuesses, int numTriesLeft) {
         List<String> phraseWords = getPhraseWords(phrase);
         dictionaryMap = pruneDictionary(dictionaryMap, phraseWords);
-        MyGuess nextGuess = getNextGuessHelper(phraseWords, dictionaryMap, previousGuesses, numTriesLeft);
+        MyGuess nextGuess = tryAllCharacters(phraseWords, dictionaryMap, previousGuesses);
 
-        //Contingency plans
+        //Last minute push - use most-frequently-used words
         if((numTriesLeft < 1) && (nextGuess.getProbability() < 0.5))
             if(phraseWords.stream().filter(w -> (w.length() < 5)).count() >= 1) {
                 mostFrequentlyUsedDictoryMap = pruneDictionary(mostFrequentlyUsedDictoryMap, phraseWords);
-                MyGuess mfwNextGuess = getNextGuessHelper(phraseWords, mostFrequentlyUsedDictoryMap, previousGuesses, numTriesLeft);
+                MyGuess mfwNextGuess = tryAllCharacters(phraseWords, mostFrequentlyUsedDictoryMap, previousGuesses);
                 if((mfwNextGuess != null) && (mfwNextGuess.getProbability() > nextGuess.getProbability()))
                     nextGuess = mfwNextGuess;
             }
@@ -53,8 +53,8 @@ public class MyGameStrategy implements HangmanGameStrategy {
 
     /**
      * Update dictionary after guessed character is wrong
-     * @param guess
-     * @param isHit
+     * @param guess Character guessed in the previous guess round
+     * @param isHit if result is a hit
      */
     @Override
     public void updateStrategy(final char guess, boolean isHit) {
@@ -70,8 +70,8 @@ public class MyGameStrategy implements HangmanGameStrategy {
         }
     }
 
-    protected MyGuess getNextGuessHelper(List<String> phraseWords, Map<Integer, Set<String>> dictionaryMap,
-                                           List<Character> previousGuesses, int numTriesLeft) {
+    protected MyGuess tryAllCharacters(List<String> phraseWords, Map<Integer, Set<String>> dictionaryMap,
+                                       List<Character> previousGuesses) {
         float max_probability = -1;
         float cur_probability;
         Character nextGuess = null;

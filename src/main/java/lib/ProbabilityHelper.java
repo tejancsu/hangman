@@ -25,5 +25,4 @@ public class ProbabilityHelper {
     public static Float getCummulativeProbabilityOfIndependantEvents(Float a, Float b) {
         return (a + b - (a * b)) ;
     }
-
 }
