@@ -90,7 +90,7 @@ public class MyGameStrategy implements HangmanGameStrategy {
 
     protected Float getProbabilityOfHit(char letter, Map<Integer, Set<String>> dictionaryMap, List<String> phraseWords) {
         List<Float> probabilities = new ArrayList<>();
-        for(final String phraseWord : phraseWords) {
+        phraseWords.forEach(phraseWord -> {
             final int phraseWordLen = phraseWord.length();
             Set<String> relevantDictionaryWords = filterDictionaryWordsMatchingPhraseWord(
                     dictionaryMap.get(phraseWordLen), phraseWord);
@@ -104,20 +104,20 @@ public class MyGameStrategy implements HangmanGameStrategy {
                 }).count();
                 probabilities.add(potentialMatchesCount / (float) relevantDictionaryWords.size());
             }
-        }
+        });
         return ProbabilityHelper.getCummulativeProbabilityOfIndependantEvents(probabilities);
     }
 
     protected Map<Integer, Set<String>> buildDictionaryMap(List<String> dictionaryList) {
         Map<Integer, Set<String>> dictionaryMap = new HashMap<>();
-        for(String word : dictionaryList) {
+        dictionaryList.forEach(word -> {
             int len = word.length();
             if(!dictionaryMap.containsKey(len)) {
                 dictionaryMap.put(len, new HashSet<String>());
             }
             Set<String> wordBucket = dictionaryMap.get(len);
             wordBucket.add(word);
-        }
+        });
         return dictionaryMap;
     }
 

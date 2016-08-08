@@ -31,10 +31,12 @@ public class HangmanGameDriver {
     }
 
     public static void main(String[] args) {
-        if(args.length != 1) {
+        for(String arg : args)
+            System.out.println(arg);
+        if(args.length != 2) {
             throw new RuntimeException("Usage: HangmanGameDriver <numRuns>");
         }
-        int numRuns = new Integer(args[0]);
+        int numRuns = new Integer(args[1]);
         HangmanGameDriver gameDriver = new HangmanGameDriver(numRuns);
         gameDriver.start();
     }
