@@ -1,5 +1,5 @@
 # Hangman Starter Code for Java 8
-Build environment -
+**Build environment** -
 ```
 ~/hangman  master 1h26m ⚑ ◒
 ▶ java -version
@@ -18,18 +18,25 @@ Default locale: en_US, platform encoding: UTF-8
 OS name: "mac os x", version: "10.10.4", arch: "x86_64", family: "mac"
 ```
 -------------
-To compile:
+**To compile** -
 ```
 mvn clean install
 ```
 
-To run:
+**To run** :
 ```
 java -jar ./target/hangman-1.0-SNAPSHOT.jar HangmanGameDriver 20
 ```
+
+This produces lot of output showing interaction with the server and at the end you can see statistics,
+```
+Total number of runs:20
+Total wins:18
+Win percentage:90
+```
 -------------
 
-Algorithm :
+***Algorithm*** :
 For each alphabet that has not been used up already, I calculate the probability of getting a hit and use the character with highest probability.
 
 - To calculate the probability of a hit for a given character in a phrase-word, I get the count of all words in the dictionary which match the unmasked characters in the phrase-word and among those words, I get the count of words which contain this particular character. This will give us probability of a hit for a particular character in a phrase-word.
@@ -49,6 +56,8 @@ P(A ∪ (B ∪ C)) = P(A) + P(B ∪ C) − P(A ∩ (B ∪ C))
 
 -------------
 
-Explanation if the win rate is low:
+**Explanation for the low win rate** -
 
-- If the given phrase has 2 letter or 3 letter words like '_at' which matches many words in english dictionary, it becomes a very hard problem unless you have an algorithm which also uses english grammar and contextual meanings. 
+- If the given phrase has 2 letter or 3 letter words like '_at' which matches many words in english dictionary, it becomes a very hard problem unless you have an algorithm which also uses english grammar and contextual meanings.
+- A good way to further improve this algorithm is to compare the words before and after a word against well known phrases. There are few research projects to solve the same problem, 
+- http://www.sciencedirect.com/science/article/pii/S001048251200042X
